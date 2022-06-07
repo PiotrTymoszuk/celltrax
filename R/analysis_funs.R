@@ -21,7 +21,6 @@
 #' @return a tibble with the results. If aggregate is FALSE, contains sets of
 #' autocovariance stats for each track, otherwise the step-wise
 #' statistic values.
-#' @export
 
   autocov <- function(x,
                       method = c('dot_product', 'angle'),
@@ -109,7 +108,6 @@
 #' @description Returns track step numbers.
 #' @return a tibble with step numbers for each track.
 #' @param x a trax object.
-#' @export
 
   track_steps <- function(x) {
 
@@ -127,7 +125,6 @@
 #' @description Returns track lengths.
 #' @return a tibble with lengths for each track.
 #' @param x a trax object.
-#' @export
 
   track_lengths <- function(x) {
 
@@ -145,7 +142,6 @@
 #' @description Returns track duration.
 #' @return a tibble with track duration for each track.
 #' @param x a trax object.
-#' @export
 
   track_duration <- function(x) {
 
@@ -163,7 +159,6 @@
 #' @description Returns time intervals for every track step.
 #' @return a tibble with track duration for each track step.
 #' @param x a trax object.
-#' @export
 
   track_times <- function(x) {
 
@@ -191,7 +186,6 @@
 #' @param aggregate 'none' (default): displacements for each step are returned,
 #' 'total': total displacements are calculated, 'mean' or 'median': mean or
 #' median displacements per track are returned.
-#' @export
 
   track_displacements <- function(x,
                                   aggregate = c('none', 'total', 'mean')) {
@@ -245,7 +239,6 @@
 #' @param aggregate 'none' (default): speeds for each step are returned,
 #' 'mean' or 'median': mean or median speeds per track are returned, 'total':
 #' total displacement by time.
-#' @export
 
   track_speeds <- function(x,
                            aggregate = c('none', 'total', 'mean', 'median')) {
@@ -298,7 +291,6 @@
 #' @description Calculates track straightness as described in
 #' \code{\link[celltrackR]{TrackMeasures}}
 #' @param x a trax object.
-#' @export
 
   track_straightness <- function(x) {
 
@@ -316,7 +308,6 @@
 #' @description Calculates track asphericity as described in
 #' \code{\link[celltrackR]{TrackMeasures}}
 #' @param x a trax object.
-#' @export
 
   track_asphericity <- function(x) {
 
@@ -337,7 +328,6 @@
 #' \code{\link[celltrackR]{TrackMeasures}}
 #' @param x a trax object.
 #' @param ... other arguments passed to \code{\link[celltrackR]{overallAngle}}
-#' @export
 
   track_overall_angles <- function(x, ...) {
 
@@ -357,7 +347,6 @@
 #' @param x a trax object.
 #' @param ... other arguments passed to
 #' \code{\link[celltrackR]{meanTurningAngle}}
-#' @export
 
   track_mean_angles <- function(x, ...) {
 
@@ -378,7 +367,6 @@
 #' as described in \code{\link[celltrackR]{TrackMeasures}}
 #' @param x a trax object.
 #' @param ... other arguments passed to \code{\link[celltrackR]{overallDot}}
-#' @export
 
   track_overall_dots <- function(x, ...) {
 
@@ -397,7 +385,6 @@
 #' vectors as described in \code{\link[celltrackR]{TrackMeasures}}
 #' @param x a trax object.
 #' @param ... other arguments passed to \code{\link[celltrackR]{overallNormDot}}
-#' @export
 
   track_normal_dots <- function(x, ...) {
 
@@ -420,13 +407,14 @@
 #' The function compares the one - versus two - Gaussian models applied to
 #' each track by calculating difference in BIC (Bayesian Information Criterion).
 #' @details See: \code{\link{bic_position}}, \code{\link{detlaBIC}} and
-#' https://cran.rstudio.com/web/packages/celltrackR/vignettes/QC.html.
+#' https://cran.rstudio.com/web/packages/celltrackR/vignettes/QC.html. The
+#' function can calculate the delta BIC statistic for tracks with 4 steps or more,
+#' others are ignored and a warning raised.
 #' @param x a trax object.
 #' @param dims dimensions used for computation of the statistic.
 #' @param sigma SD of the Gaussian distribution. The approximate cell diameter
 #' is a good starting point here.
 #' @return A tibble with the delta BIC values (one- vs two-Gaussian model).
-#' @export
 
   track_bic_motility <- function(x,
                                  sigma = 10,
@@ -441,6 +429,16 @@
     if(any(!dims %in% c('x', 'y', 'z'))) {
 
       stop('dims must be a pair from the x, y, z set.', call. = FALSE)
+
+    }
+
+    if(any(purrr::map_dbl(x, nrow) < 4)) {
+
+      warning('There are tracks with < 4 steps in the trax object.
+              They will be removed from the analysis.',
+              call. = FALSE)
+
+      x <- filter_steps(x, min_steps = 4)
 
     }
 

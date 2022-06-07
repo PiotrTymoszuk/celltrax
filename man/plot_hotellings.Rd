@@ -9,8 +9,8 @@ plot_hotellings(
   dims = c("x", "y"),
   step_spacing = 0,
   conf_level = 0.95,
+  color = "steelblue",
   point_alpha = 0.25,
-  point_color = "steelblue",
   ellipse_border = "coral4",
   ellipse_color = "coral3",
   ellipse_alpha = 0.25,
@@ -30,9 +30,9 @@ see: \code{\link[celltrackR]{hotellingsTest}} for details.}
 
 \item{conf_level}{confidence level.}
 
-\item{point_alpha}{alpha of points.}
+\item{color}{point color.}
 
-\item{point_color}{point color.}
+\item{point_alpha}{alpha of points.}
 
 \item{ellipse_border}{ellipse border color.}
 
@@ -51,5 +51,5 @@ Draws a two-dimensional hotellings plot with the confidence
 interval ellipsis and mean displacement.
 }
 \details{
-a wrapper around \code{\link[celltrackR]{hotellingsTest}}
+a wrapper around \code{\link[celltrackR]{hotellingsTest}}.
 }

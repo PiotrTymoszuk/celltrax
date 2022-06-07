@@ -148,6 +148,12 @@
 
 # Projection ------
 
+#' Extract Spatial Dimensions
+#'
+#' @inherit celltrackR::projectDimensions
+#' @details Preserves 'trax' class.
+#' @export
+
   projectDimensions <- function(x, dims = c('x', 'y')) {
 
     output <- celltrackR::projectDimensions(x = x, dims = dims)
@@ -163,5 +169,70 @@
     }
 
   }
+
+# Gap repair ------
+
+#' Process Tracks Containing Gaps
+#'
+#' @inherit celltrackR::repairGaps
+#' @details Preserves 'trax' class.
+#' @export
+
+  repairGaps <- function(x,
+                         how = 'split',
+                         tol = 0.05,
+                         split.min.length = 2) {
+
+    output <- celltrackR::repairGaps(x = x,
+                                     how = how,
+                                     tol = tol,
+                                     split.min.length = split.min.length)
+
+    if(is_trax(x)) {
+
+      return(trax(output))
+
+    } else {
+
+      return(output)
+
+    }
+
+  }
+
+# Pair analysis, tibble output -------
+
+#' Find Distances and Angles for all Pairs of Tracks
+#'
+#' @inherit celltrackR::analyzeCellPairs
+#' @export
+
+  analyzeCellPairs <- function(X, searchRadius = Inf, quietly = FALSE, ...) {
+
+    tibble::as_tibble(celltrackR::analyzeCellPairs(X,
+                                                   searchRadius = Inf,
+                                                   quietly = FALSE, ...))
+
+  }
+
+#' Find Distances and Angles for all Pairs of Steps
+#'
+#' @inherit celltrackR::analyzeStepPairs
+#' @export
+
+  analyzeStepPairs  <- function(X,
+                                filter.steps = NULL,
+                                searchRadius = Inf,
+                                quietly = FALSE, ...) {
+
+    tibble::as_tibble(celltrackR::analyzeStepPairs(X,
+                                                   filter.steps = NULL,
+                                                   searchRadius = Inf,
+                                                   quietly = FALSE, ...))
+
+
+  }
+
+
 
 # END -----

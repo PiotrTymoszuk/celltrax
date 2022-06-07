@@ -1,4 +1,4 @@
-# Non.-exported utilities
+# Non-exported utilities
 
 # Colors -----
 
@@ -162,5 +162,116 @@
     b1 - min(b2, na.rm = TRUE)
 
   }
+
+# Drift correction ------
+
+#' Adjust a single track with a mean speed vector.
+#'
+#' @description Adjusts a single track for non-specific drift by subtracting a
+#' user-provided mean speed vector.
+#' @param track a single track, i.e. element of tracks or trax object.
+#' @param drift_vector a drift vector. Its dimensions need to correspond to
+#' the track dimension.
+#' @return a matrix.
+
+  adjust_drift <- function(track, drift_vector) {
+
+    # separate timepoints and coordinates
+
+    tvec <- track[,1]
+    coords <- track[,-1]
+
+    # compute movement due to drift.
+
+    drift.matrix <- matrix(rep(drift_vector,
+                               nrow(coords)),
+                           ncol = ncol(coords),
+                           byrow = TRUE )
+
+    drift.matrix <- drift.matrix * tvec
+
+    # Add drift to coordinates
+
+    track[,-1] <- coords - drift.matrix
+
+    return(track)
+
+  }
+
+# Graphics theme ------
+
+#' Standard ggplot theme.
+#'
+#' @description Defines a standard ggplot theme for the package's plots.
+#' @return a ggplot theme object
+#' @export
+
+  theme_trax <- function() {
+
+    common_text <- element_text(size = 8, face = 'plain', color = 'black')
+
+    common_margin <- ggplot2::margin(t = 4, l = 3, r = 2, unit = 'mm')
+
+    theme_classic() + theme(axis.text = common_text,
+                            axis.title = common_text,
+                            plot.title = element_text(size = 8,
+                                                      face = 'bold',
+                                                      color = 'black',
+                                                      hjust = 0),
+                            plot.subtitle = common_text,
+                            plot.tag = element_text(size = 8,
+                                                    face = 'plain',
+                                                    color = 'black',
+                                                    hjust = 0),
+                            plot.tag.position = 'bottom',
+                            legend.text = common_text,
+                            legend.title = common_text,
+                            strip.text = common_text,
+                            strip.background = element_rect(fill = 'gray95',
+                                                            color = 'gray80'),
+                            plot.margin = common_margin,
+                            panel.grid.major = element_line(color = 'gray90'))
+
+  }
+
+# Splitting long tracks by displacement cutoffs -----
+
+#' Split a single track by a displacement cutoff.
+#'
+#' @description Given a single track, the function calculated displacements for
+#' each step and splits the track into multiple ones if the cutoff is met.
+#' @param track a single track, i.e. element of tracks or trax object.
+#' @param disp_cutoff the scalar displacement cutoff.
+#' @param prefix a prefix of the track split names.
+#' @return a trax object.
+
+  split_track <- function(track,
+                          disp_cutoff,
+                          prefix = NULL) {
+
+    track <- as_trax(wrapTrack(track))
+
+    if(!is.null(prefix)) track <- rlang::set_names(track, prefix)
+
+    if(nrow(track[[1]]) < 3) return(track)
+
+    cutpoints <- dplyr::filter(track_displacements(track),
+                               value > disp_cutoff)$i
+
+    if(length(cutpoints) == 0) return(track)
+
+    splits <- splitTrack(track[[1]], positions = cutpoints)
+
+    if(!is.null(prefix)) {
+
+      splits <- rlang::set_names(splits,
+                                 paste(prefix, 1:length(splits), sep = '_'))
+
+    }
+
+    as_trax(splits)
+
+  }
+
 
 # END -----

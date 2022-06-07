@@ -168,6 +168,149 @@
 
 #' Plot the trax object tracks, hotellings vectors or statistics.
 #'
-#' @description Baustelle
+#' @description Generates a requested plot type for the trax object.
+#' @details Types and corresponding functions:
+#' 'tracks' (default): plots single tracks as specified
+#' in \code{\link{plot_tracks}},
+#' 'vectors': plots total displacement vectors with \code{\link{plot_vectors}},
+#' 'hotellings': generates a hotellings plot with \code{\link{plot_hotellings}},
+#' 'autocov': autocovariance plot with \code{\link{plot_autocov}},
+#' 'statistic': tracks' statistic distribution with \code{\link{plot_statistic}},
+#' 'stat_pair': tracks' statistic pair as a point plot
+#' with \code{\link{plot_stat_pair}},
+#' 'pair_analysis': cell or step pair distances and angles
+#' as specified in \code{\link{plot_pair_analysis}}.
+#' @param x a trax object.
+#' @param type plot type, see: Details. 'tracks' by default.
+#' @param normalize logica: should the tracks be normalized prior to plotting?
+#' @param coverage fraction of the tracks to be presented in the plot. If 1 all
+#' tracks are presented. If < 1, a random sample of tracks of the given size
+#' is presented.
+#' @param plot_title plot title.
+#' @param plot_subtitle plot_subtitle.
+#' @param cust_theme custom ggplot2 theme.
+#' @param ... extra arguments passed to downstream functions, see: Details.
+#' @export plot.trax
+#' @export
+
+  plot.trax <- function(x,
+                        type = c('tracks', 'vectors',
+                                 'hotellings', 'autocov',
+                                 'statistic', 'stat_pair',
+                                 'pair_analysis'),
+                        normalize = FALSE,
+                        coverage = 1,
+                        plot_title = NULL,
+                        plot_subtitle = NULL,
+                        cust_theme = theme_trax(), ...) {
+
+    stopifnot(is_trax(x))
+    stopifnot(is.logical(normalize))
+
+    type <- match.arg(type[1],
+                      c('tracks', 'vectors',
+                        'hotellings', 'autocov',
+                        'statistic', 'stat_pair',
+                        'pair_analysis'))
+
+    ## plotting
+
+    end_plot <- switch(type,
+                       tracks = plot_tracks(x,
+                                            normalize = normalize,
+                                            coverage = coverage, ...),
+                       vectors = plot_vectors(x, normalize = normalize,
+                                              coverage = coverage, ...),
+                       hotellings = plot_hotellings(x, ...),
+                       autocov = plot_autocov(x,
+                                              coverage = coverage, ...),
+                       statistic = plot_statistic(x, ...),
+                       stat_pair = plot_stat_pair(x,
+                                                  coverage = coverage, ...),
+                       pair_analysis = plot_pair_analysis(x,
+                                                          coverage = coverage, ...))
+
+    end_plot +
+      labs(title = plot_title,
+           subtitle = plot_subtitle) +
+      cust_theme
+
+  }
+
+# Statistic calculation -------
+
+#' Calculate track measures.
+#'
+#' @description Calculates the requested track statistic for a trax object.
+#' @details Types of returned statistics:
+#' 'steps' (default): number of steps per track (\code{\link{track_steps}}),
+#' 'lengths': track length (\code{\link{track_lengths}}),
+#' 'times': track's step time intervals (\code{\link{track_times}}),
+#' 'duration': track duration (\code{\link{track_duration}}),
+#' 'displacements': track displacements (\code{\link{track_displacements}}),
+#' 'speeds': track speeds (\code{\link{track_speeds}}),
+#' 'overall_angles': track overall angles (\code{\link{track_overall_angles}}),
+#' 'mean_angles': track mean turning angles (\code{\link{track_mean_angles}}),
+#' 'overall_dots': overall dot products (\code{\link{track_overall_dots}})
+#' 'normal_dots': normal dot products (\code{\link{track_normal_dots}}),
+#' 'straightness': track straightness (\code{\link{track_straightness}}),
+#' 'asphericity: track asphericity (\code{\link{track_asphericity}}),
+#' 'delta_BIC': track's elements Gaussian modeling outcome
+#' (\code{\link{track_bic_motility}}),
+#' 'autocov': autocovariance (\code{\link{autocov}})
+#' 'hotellings': results of hotellings test (\code{\link{hotellings_test}}),
+#' 'cell_pairs': cell painr distance and angles (\code{\link{analyzeCellPairs}}),
+#' 'step_pairs': step pair distance and angles (\code{\link{analyzeStepPairs}}).
+#' @param x a trax object.
+#' @param type statistic type, see: Details. 'steps' by default.
+#' @param ... additional arguments to statiscit computing function, see: Details.
+#' @return a tibble with the requested statistic, track id
+#' and optionally step id.
+#' @export calculate.trax
+#' @export
+
+  calculate.trax <- function(x,
+                             type = c('steps', 'lengths',
+                                      'times', 'duration',
+                                      'displacements', 'speeds',
+                                      'overall_angles', 'mean_angles',
+                                      'overall_dots', 'normal_dots',
+                                      'straightness', 'asphericity',
+                                      'delta_BIC', 'autocov',
+                                      'hotellings', 'cell_pairs',
+                                      'step_pairs'),
+                             ...) {
+
+    stopifnot(is_trax(x))
+
+    type = match.arg(type[1],
+                     c('steps', 'lengths',
+                       'times', 'duration',
+                       'displacements', 'speeds',
+                       'overall_angles', 'mean_angles',
+                       'overall_dots', 'normal_dots',
+                       'straightness', 'asphericity',
+                       'delta_BIC', 'autocov',
+                       'hotellings', 'cell_pairs',
+                       'step_pairs'))
+
+    switch(type,
+           steps = track_steps(x),
+           lengths = track_lengths(x),
+           times = track_times(x),
+           duration = track_duration(x),
+           displacements = track_displacements(x, ...),
+           speeds = track_speeds(x, ...),
+           overall_angles = track_overall_angles(x, ...),
+           normal_dots = track_normal_dots(x, ...),
+           straightness = track_straightness(x),
+           asphericity = track_asphericity(x),
+           delta_BIC = track_bic_motility(x, ...),
+           autocov = autocov(x, ...),
+           hotellings = hotellings_test(x, ...),
+           cell_pairs = analyzeCellPairs(x, ...),
+           step_pairs = analyzeStepPairs(x, ...))
+
+  }
 
 # END -----

@@ -26,5 +26,7 @@ each track by calculating difference in BIC (Bayesian Information Criterion).
 }
 \details{
 See: \code{\link{bic_position}}, \code{\link{detlaBIC}} and
-https://cran.rstudio.com/web/packages/celltrackR/vignettes/QC.html.
+https://cran.rstudio.com/web/packages/celltrackR/vignettes/QC.html. The
+function can calculate the delta BIC statistic for tracks with 4 steps or more,
+others are ignored and a warning raised.
 }

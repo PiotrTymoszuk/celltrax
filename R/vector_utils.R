@@ -50,12 +50,15 @@
 
     vecs <- purrr::reduce(vecs, rbind)
 
-    mean_vec <- rbind(c(t = 0, x = 0, y = 0),
-                      colMeans(vecs))
+    mean_vec <- colMeans(vecs)[-1]
 
-    if(!simplify) return(trax(wrapTrack(mean_vec)))
+    if(simplify) return(mean_vec)
 
-    colMeans(vecs)[-1]
+    zero_vec <- rlang::set_names(rep(0, length(mean_vec)),
+                                 names(mean_vec))
+
+    rbind(zero_vec,
+          mean_vec)
 
   }
 
@@ -84,6 +87,27 @@
     sample_idx <- sample(1:length(x), size = size, replace = replace)
 
     x[sample_idx]
+
+  }
+
+# Calculate mean speed vector -----
+
+#' Calculate mean speed vector.
+#'
+#' @description Calculates mean speed vector by dividing the mean total
+#' displacement vector by median time interval.
+#' @return a vector x, y and z dimensions.
+#' @param x a trax object with a single track representing
+#' the sum displacement vector.
+#' @export
+
+  get_mean_speed <- function(x) {
+
+    if(!is_trax(x)) stop("Argument 'x' needs to be a 'trax' object.", call. = FALSE)
+
+    mean_vec <- get_mean_vector(x, simplify = TRUE)
+
+    mean_vec/timeStep(x, na.rm = TRUE)
 
   }
 

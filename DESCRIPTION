@@ -6,7 +6,7 @@ Author: Who wrote it
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Authors@R: 
@@ -16,6 +16,7 @@ Imports:
     celltrackR,
     ellipse,
     furrr,
+    generics,
     ggforce,
     grDevices,
     grid,
@@ -27,4 +28,5 @@ RoxygenNote: 7.2.0
 Depends: 
     celltrackR,
     dplyr,
+    generics,
     ggplot2

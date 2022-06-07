@@ -102,7 +102,7 @@
 
   as_trax.data.frame <- function(x, ...) {
 
-    tracx(celltrackR:::as.tracks.data.frame(x, ...))
+    trax(celltrackR:::as.tracks.data.frame(x, ...))
 
   }
 
