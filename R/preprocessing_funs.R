@@ -39,7 +39,7 @@
 
       min_steps <- as.integer(min_steps)
 
-      if(!min_steps %in% stat_range[1]:stat_range[2]) {
+      if(!min_steps %in% 0:stat_range[2]) {
 
         stop('The min_steps argument beyond the step number in the track set.',
              call. = FALSE)
