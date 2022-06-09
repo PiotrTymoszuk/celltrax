@@ -180,7 +180,9 @@
 
     if(!is_trax(x)) stop("Argument 'x' needs to be a 'trax' object.", call. = FALSE)
 
-    if(length(drift_vector) != ncol(x[[1]]) - 1) {
+    available_dims <- ncol(x[[1]]) - 1
+
+    if(length(drift_vector) < available_dims) {
 
       stop('The length of the drift_vector needs to correspond with the x dimentions.',
            call. = FALSE)
@@ -191,7 +193,9 @@
 
     ## computation
 
-    corrx <- as_trax(purrr::map(x, adjust_drift, drift_vector = drift_vector))
+    corrx <- as_trax(purrr::map(x,
+                                adjust_drift,
+                                drift_vector = drift_vector[1:available_dims]))
 
     if(!return_both) {
 

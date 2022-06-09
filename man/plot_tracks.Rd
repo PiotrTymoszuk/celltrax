@@ -10,7 +10,7 @@ plot_tracks(
   normalize = FALSE,
   coverage = 1,
   color = NULL,
-  show_zero = TRUE,
+  show_zero = FALSE,
   point_size = 1,
   point_alpha = 1,
   line_size = 0.5,

@@ -180,7 +180,8 @@
 
 #' Calculate scalar displacements.
 #'
-#' @description Calculates displacements, step-wise or track-wise.
+#' @description Calculates displacements (lengths of displacement vectors),
+#' step-wise, track-wise, mean or median.
 #' @return a tibble with the requested values.
 #' @param x a trax object.
 #' @param aggregate 'none' (default): displacements for each step are returned,
@@ -201,7 +202,7 @@
 
     if(aggregate == 'total') {
 
-      disps <- purrr::map_dbl(x, duration)
+      disps <- purrr::map_dbl(x, displacement)
 
       return(tibble::tibble(id = names(disps),
                             value = disps))

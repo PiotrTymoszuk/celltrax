@@ -17,5 +17,6 @@ median displacements per track are returned.}
 a tibble with the requested values.
 }
 \description{
-Calculates displacements, step-wise or track-wise.
+Calculates displacements (lengths of displacement vectors),
+step-wise, track-wise, mean or median.
 }

@@ -107,7 +107,9 @@
 
     mean_vec <- get_mean_vector(x, simplify = TRUE)
 
-    mean_vec/timeStep(x, na.rm = TRUE)
+    av_time <- mean(track_steps(x)$value) * timeStep(x, na.rm = TRUE)
+
+    mean_vec/av_time
 
   }
 
