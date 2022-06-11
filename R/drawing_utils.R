@@ -294,14 +294,16 @@
 
     }
 
+    base_plot <- base_plot +
+      labs(tag = plot_tag)
+
     if(!normalize | is.null(mean_color)) return(base_plot)
 
     base_plot +
       geom_path(data = as.data.frame(mean_vec),
                 size = mean_size,
                 color = mean_color,
-                arrow = arrow) +
-      labs(tag = plot_tag)
+                arrow = arrow)
 
   }
 
