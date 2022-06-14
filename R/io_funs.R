@@ -173,11 +173,21 @@
 
     ## trax object
 
-    text_entry <- text_entry[c(id_name, t_name, x_name, y_name, z_name)]
+    text_entry <- text_entry[c(id_name, t_name, x_name, y_name, z_name, sample_name)]
 
     text_entry <- dplyr::filter(text_entry, complete.cases(text_entry))
 
-    if(!is.null(sample_name) & length(unique(text_entry)) > 1) {
+    if(!is.null(sample_name)) {
+
+      if(length(unique(text_entry[[sample_name]])) == 1) {
+
+        return(filter_steps(as_trax(text_entry),
+                            min_steps = 2,
+                            return_both = FALSE))
+
+      }
+
+      sample_name <- paste0('`', sample_name, '`')
 
       trax_list <- plyr::dlply(text_entry, sample_name, as_trax)
 
