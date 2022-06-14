@@ -2,7 +2,7 @@
 % Please edit documentation in R/io_funs.R
 \name{read_trax}
 \alias{read_trax}
-\title{Imports tracks from a single text file.}
+\title{Import tracks from a single formatted text file.}
 \usage{
 read_trax(file, ...)
 }
@@ -10,6 +10,9 @@ read_trax(file, ...)
 \item{file}{a path to the file.}
 
 \item{...}{extra arguments passed to \code{\link[readr]{read_tsv}}.}
+}
+\value{
+a trax class object.
 }
 \description{
 Reads track information from a tab-separated text file of the
