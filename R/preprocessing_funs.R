@@ -365,6 +365,8 @@
                                          disp_cutoff = disp_cutoff,
                                          prefix = .y))
 
+    new_trax <- purrr::compact(new_trax)
+
     new_trax <- purrr::reduce(new_trax, c.trax)
 
     if(!return_both) return(new_trax)

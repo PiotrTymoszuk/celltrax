@@ -240,6 +240,8 @@
 #'
 #' @description Given a single track, the function calculated displacements for
 #' each step and splits the track into multiple ones if the cutoff is met.
+#' @details Returns NULL, if the track has only displacements larger than
+#' the disp_cutoff parameter.
 #' @param track a single track, i.e. element of tracks or trax object.
 #' @param disp_cutoff the scalar displacement cutoff.
 #' @param prefix a prefix of the track split names.
@@ -261,6 +263,8 @@
     if(length(cutpoints) == 0) return(track)
 
     splits <- splitTrack(track[[1]], positions = cutpoints)
+
+    if(length(splits) == 0) return(NULL)
 
     if(!is.null(prefix)) {
 
