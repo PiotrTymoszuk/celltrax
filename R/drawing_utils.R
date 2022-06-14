@@ -487,7 +487,7 @@
 
     ## plotting data
 
-    mean_tbl <- autocov(x, method = method, aggregate = TRUE)
+    mean_tbl <- autocov(x, method = method, aggregate = TRUE, na.rm = TRUE)
 
     if(coverage < 1) {
 
